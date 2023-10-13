@@ -23,12 +23,27 @@
         android:text="Submit"
         />
 
-    <TextView
+
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Answer"
-        android:textSize="32sp"
-        android:id="@+id/txtResponse"
-         />
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            >
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Answer"
+                android:textSize="32sp"
+                android:id="@+id/txtResponse"
+                />
+        </LinearLayout>
+
+
+    </ScrollView>
 
 </LinearLayout>
