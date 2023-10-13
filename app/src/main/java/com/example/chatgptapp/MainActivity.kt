@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.util.Log
 import android.widget.Button
 import android.widget.EditText
+import android.widget.ImageButton
 import android.widget.TextView
 import android.widget.Toast
 import okhttp3.Call
@@ -25,13 +26,14 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         val etquestion = findViewById<EditText>(R.id.etQuestion)
-        val btnSubmit = findViewById<Button>(R.id.btnSubmit)
+        val btnSubmit = findViewById<ImageButton>(R.id.btnSubmit)
         val txtResponse = findViewById<TextView>(R.id.txtResponse)
+        val questiontv = findViewById<TextView>(R.id.questionTextview)
 
 
         btnSubmit.setOnClickListener {
             val question = etquestion.text.toString()
-            Toast.makeText(this, question, Toast.LENGTH_SHORT).show()
+            questiontv.setText(question)
             getResponse(question){response ->
                 runOnUiThread{
                     txtResponse.text = response
