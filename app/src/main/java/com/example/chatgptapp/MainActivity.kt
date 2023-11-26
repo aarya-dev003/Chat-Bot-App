@@ -1,86 +1,47 @@
 package com.example.chatgptapp
 
+import android.graphics.Color
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
-import android.widget.Button
 import android.widget.EditText
-import android.widget.ImageButton
-import android.widget.TextView
-import android.widget.Toast
-import okhttp3.Call
-import okhttp3.Callback
-import okhttp3.MediaType.Companion.toMediaType
-import okhttp3.MediaType.Companion.toMediaTypeOrNull
-import okhttp3.OkHttpClient
-import okhttp3.Request
-import okhttp3.RequestBody.Companion.toRequestBody
-import okhttp3.Response
-import org.json.JSONArray
-import org.json.JSONObject
-import java.io.IOException
+import android.widget.LinearLayout
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.example.chatgptapp.databinding.ActivityMainBinding
+import com.example.chatgptapp.model.Message
 
 class MainActivity : AppCompatActivity() {
-    private val client = OkHttpClient()
+
+
+
+    private lateinit var _binding : ActivityMainBinding
+    private lateinit var chatGptViewModel: ChatGptViewModel
     override fun onCreate(savedInstanceState: Bundle?) {
+        window.statusBarColor = Color.TRANSPARENT
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
-        val etquestion = findViewById<EditText>(R.id.etQuestion)
-        val btnSubmit = findViewById<ImageButton>(R.id.btnSubmit)
-        val txtResponse = findViewById<TextView>(R.id.txtResponse)
-        val questiontv = findViewById<TextView>(R.id.questionTextview)
+        _binding = ActivityMainBinding.inflate(layoutInflater)
+        val binding = _binding.root
+        setContentView(binding)
 
+        chatGptViewModel = ViewModelProvider(this)[ChatGptViewModel::class.java]
 
-        btnSubmit.setOnClickListener {
-            val question = etquestion.text.toString()
-            questiontv.setText(question)
-            getResponse(question){response ->
-                runOnUiThread{
-                    txtResponse.text = response
-                }
-            }
+        val llm = LinearLayoutManager(this)
+        _binding.recyclerView.layoutManager = llm
+
+        chatGptViewModel.messageList.observe(this){messages ->
+            val adapter = MessageAdapter(messages)
+            _binding.recyclerView.adapter = adapter
         }
-    }
-    fun getResponse(question: String, callback: (String) -> Unit){
 
-        val apiKey = ""
-        val url = "https://api.openai.com/v1/completions"
+        _binding.sendBtn.setOnClickListener {
+            val question = _binding.messageEditText.text.toString()
+            chatGptViewModel.addToChat(question, Message.SENT_BY_ME,chatGptViewModel.getCurrentTimestamp())
+            _binding.messageEditText.setText("")
+            chatGptViewModel.callApi(question)
+        }
 
-        val requestBody = """
-            {
-            "model": "text-davinci-003",
-            "prompt": "$question",
-            "max_tokens": 1000,
-            "temperature": 0
-            }
-        """.trimIndent()
 
-        val request = Request.Builder()
-            .url(url)
-            .addHeader("Content-Type", "application/json")
-            .addHeader("Authorization", "Bearer $apiKey")
-            .post(requestBody.toRequestBody("application/json".toMediaTypeOrNull()))
-            .build()
-
-        client.newCall(request).enqueue(object : Callback {
-            override fun onFailure(call: Call, e: IOException) {
-                Log.e("error" ,"api failed",e)
-            }
-
-            override fun onResponse(call: Call, response: Response) {
-                val body =response.body?.string()
-                if (body != null) {
-                    Log.v("data", body)
-                }
-                else{
-                    Log.v("data", "empty")
-                }
-                var jsonObject = JSONObject(body)
-                val jsonArray:JSONArray =jsonObject.getJSONArray("choices")
-                val textResult = jsonArray.getJSONObject(0).getString("text")
-                callback(textResult)
-            }
-
-        })
     }
 }
