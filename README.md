@@ -33,11 +33,17 @@ Upon launching the app, users can begin conversing with the chatbot. The app sen
 
 ## Contributions
 
-Contributions to enhance the app's functionality, optimize code, or address issues are welcome. To contribute:
+Contributions to enhance the UI or improve the app's design are welcome. If you'd like to contribute UI-related changes:
 
 1. Fork the repository.
-2. Make necessary changes.
-3. Create a pull request, detailing the modifications made.
+2. Make the necessary UI modifications, improvements, or enhancements.
+3. Create a pull request, detailing the changes made specifically to the user interface.
+
+For any other significant changes, please open an issue first to discuss and ensure alignment with the project's goals.
+
+Your contributions, especially those enhancing the user experience, are highly appreciated!
+
+
 
 ## Credits
 
