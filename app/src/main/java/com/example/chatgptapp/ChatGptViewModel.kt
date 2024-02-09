@@ -43,7 +43,7 @@ class ChatGptViewModel : ViewModel(){
         val completionRequest = CompletionRequest(
             model = "text-davinci-003",
             prompt = question,
-            max_tokens = 4000
+            max_tokens = 3000
         )
 
         viewModelScope.launch {
